@@ -6,7 +6,7 @@ import PhoneInput from "react-phone-number-input";
 import { Search, Shield, Eye, ArrowRight, CheckCircle2 } from "lucide-react";
 
 export default function LandingPage() {
-  const [phone, setPhone] = useState<string | undefined>("");
+  const [phone, setPhone] = useState<string | undefined>();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const router = useRouter();
