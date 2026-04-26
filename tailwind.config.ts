@@ -9,51 +9,30 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        acid: "#00ff88",
-        acid2: "#00e5ff",
-        background: "#020408",
-        surface: "rgba(0,255,136,0.04)",
-        border: "rgba(0,255,136,0.15)",
-        foreground: "#e8f4f0",
-        muted: "#4a6a5a",
+        background: "#ffffff",
+        foreground: "#0f172a",
+        muted: "#64748b",
+        "muted-foreground": "#94a3b8",
+        border: "#e2e8f0",
+        primary: "#0f172a",
+        "primary-foreground": "#ffffff",
+        accent: "#f1f5f9",
+        success: "#10b981",
+        card: "#ffffff",
+        "card-foreground": "#0f172a",
       },
       fontFamily: {
         sans: ["Inter", "system-ui", "sans-serif"],
-        display: ["Orbitron", "monospace"],
       },
-      animation: {
-        float: "float 8s ease-in-out infinite",
-        blink: "blink 1.5s infinite",
-        pulse: "pulse 1.8s ease-in-out infinite",
-        shimmer: "shimmer 3s linear infinite",
-        shine: "shine 3s linear infinite",
-        fadeUp: "fadeUp 0.5s ease both",
+      borderRadius: {
+        xl: "12px",
+        "2xl": "16px",
+        "3xl": "24px",
       },
-      keyframes: {
-        float: {
-          "0%, 100%": { transform: "translateY(0)" },
-          "50%": { transform: "translateY(-30px)" },
-        },
-        blink: {
-          "0%, 100%": { opacity: "1" },
-          "50%": { opacity: "0.3" },
-        },
-        pulse: {
-          "0%, 100%": { boxShadow: "0 4px 20px rgba(0,255,136,0.4)" },
-          "50%": { boxShadow: "0 4px 50px rgba(0,255,136,0.7)" },
-        },
-        shimmer: {
-          "0%": { backgroundPosition: "0% 0" },
-          "100%": { backgroundPosition: "200% 0" },
-        },
-        shine: {
-          "0%": { left: "-100%" },
-          "100%": { left: "200%" },
-        },
-        fadeUp: {
-          from: { opacity: "0", transform: "translateY(20px)" },
-          to: { opacity: "1", transform: "translateY(0)" },
-        },
+      boxShadow: {
+        soft: "0 2px 8px rgba(0, 0, 0, 0.04), 0 4px 24px rgba(0, 0, 0, 0.06)",
+        medium: "0 4px 12px rgba(0, 0, 0, 0.08), 0 8px 32px rgba(0, 0, 0, 0.08)",
+        strong: "0 8px 24px rgba(0, 0, 0, 0.12), 0 16px 48px rgba(0, 0, 0, 0.12)",
       },
     },
   },

@@ -1,182 +1,191 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import Image from "next/image";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import PhoneInput from "react-phone-number-input";
+import { Search, Shield, Eye, ArrowRight, CheckCircle2 } from "lucide-react";
 
-export default function Home() {
-  const [phoneNumber, setPhoneNumber] = useState<string | undefined>("");
-  const [liveCount, setLiveCount] = useState(847);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState(false);
+export default function LandingPage() {
+  const [phone, setPhone] = useState<string | undefined>("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+  const router = useRouter();
 
-  useEffect(() => {
-    const min = 153;
-    const max = 1080;
-    let current = Math.floor(Math.random() * (max - min + 1)) + min;
-
-    const interval = setInterval(() => {
-      const change = Math.floor(Math.random() * 10) + 1;
-      current += Math.random() < 0.5 ? change : -change;
-      current = Math.max(min, Math.min(max, current));
-      setLiveCount(current);
-    }, Math.floor(Math.random() * 3000) + 2000);
-
-    return () => clearInterval(interval);
-  }, []);
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    if (!phoneNumber || phoneNumber.replace(/[^0-9]/g, "").length < 7) {
-      setError(true);
+    
+    if (!phone || phone.length < 10) {
+      setError("Por favor, insira um número válido");
       return;
     }
 
-    setError(false);
-    setIsSubmitting(true);
+    setIsLoading(true);
+    setError("");
 
-    const cleanNumber = phoneNumber.replace(/[^0-9]/g, "");
-
-    // Fetch WhatsApp photo in background
-    fetch("https://719gil.uazapi.com/chat/details", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        token: "9679c620-2f1e-455f-b2ca-3ed466643018",
-      },
-      body: JSON.stringify({ number: cleanNumber, preview: false }),
-    })
-      .then((r) => r.json())
-      .then((data) => {
-        const imgUrl = data.image || data.imagePreview || null;
-        if (imgUrl) {
-          sessionStorage.setItem("photoUserLink", imgUrl);
-        }
-      })
-      .catch((err) => console.log("Photo API error:", err));
-
-    // Get UTM params
-    const urlParams = new URLSearchParams(window.location.search);
-    let redirectUrl = `/decode?tel=${encodeURIComponent(cleanNumber)}`;
-    ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term"].forEach((p) => {
-      const v = urlParams.get(p);
-      if (v) redirectUrl += `&${p}=${encodeURIComponent(v)}`;
-    });
+    const cleanNumber = phone.replace(/[^0-9]/g, "");
+    localStorage.setItem("scanPhone", cleanNumber);
 
     setTimeout(() => {
-      window.location.href = redirectUrl;
-    }, 300);
+      router.push("/loading");
+    }, 500);
   };
 
+  const steps = [
+    {
+      icon: <Search className="w-6 h-6" />,
+      title: "Digite o número",
+      description: "Insira o número que deseja investigar",
+    },
+    {
+      icon: <Shield className="w-6 h-6" />,
+      title: "Escaneamos perfis",
+      description: "Nossa tecnologia busca dados correspondentes",
+    },
+    {
+      icon: <Eye className="w-6 h-6" />,
+      title: "Veja os resultados",
+      description: "Acesse conversas e mídia privada",
+    },
+  ];
+
   return (
-    <div className="flex flex-col items-center min-h-screen pb-16">
-      {/* Orbs */}
-      <div className="fixed w-[300px] h-[300px] rounded-full bg-acid/[0.06] -top-20 -right-15 blur-[80px] animate-float pointer-events-none z-0" />
-      <div className="fixed w-[200px] h-[200px] rounded-full bg-acid2/[0.04] bottom-[200px] -left-15 blur-[80px] animate-float pointer-events-none z-0" style={{ animationDelay: "-4s" }} />
-
-      <div className="w-full max-w-[480px] relative z-10 flex flex-col items-stretch">
-        {/* Header */}
-        <header className="flex flex-col items-center px-5 pt-8 pb-5 gap-3">
-          <Image
-            src="/assets/logo-Dmi_bgbj.png"
-            alt="WhatSpy"
-            width={80}
-            height={80}
-            className="rounded-full border-2 border-acid/30 shadow-[0_0_30px_rgba(0,255,136,0.2)] object-cover"
-          />
-          <span className="font-display text-lg font-black text-acid tracking-widest text-shadow">
-            WHATSPY
-          </span>
-          <h1 className="text-[clamp(16px,4.2vw,20px)] font-bold text-center leading-relaxed text-foreground px-2">
-            ¿Sospechas de alguien?
-            <br />
-            Descubre sus <span className="text-acid">conversaciones ocultas</span> ahora mismo.
-          </h1>
-        </header>
-
-        {/* Live Bar */}
-        <div className="flex items-center justify-center gap-2 px-4 py-2.5 text-xs text-muted border-b border-acid/[0.08]">
-          <span className="w-2 h-2 bg-acid rounded-full animate-blink flex-shrink-0" />
-          <span>
-            <strong className="text-foreground">{liveCount}</strong> personas investigando ahora...
-          </span>
-        </div>
-
-        {/* Steps */}
-        <div className="flex flex-col gap-3 px-4 pt-5 pb-2">
-          {[
-            { num: "01", title: "Introduce el número", desc: "Ingresa el número de la persona que deseas monitorizar y rastrear." },
-            { num: "02", title: "Escaneo secreto", desc: "Nuestro sistema escanea mensajes, fotos, videos y archivos multimedia." },
-            { num: "03", title: "Accede a los datos", desc: "Consulta todos los mensajes y archivos sospechosos detectados." },
-          ].map((step, i) => (
-            <div key={step.num} className="flex items-start gap-3.5 animate-fadeUp" style={{ animationDelay: `${i * 0.15}s` }}>
-              <div className="flex-shrink-0 w-9 h-9 rounded-[10px] bg-gradient-to-br from-acid to-acid2 flex items-center justify-center font-display text-xs font-black text-black shadow-[0_2px_12px_rgba(0,255,136,0.3)]">
-                {step.num}
-              </div>
-              <div>
-                <h3 className="text-sm font-bold text-foreground mb-0.5">{step.title}</h3>
-                <p className="text-xs text-muted leading-relaxed">{step.desc}</p>
-              </div>
+    <main className="min-h-screen bg-gradient-to-b from-white to-slate-50">
+      {/* Header */}
+      <header className="py-6 px-4">
+        <div className="max-w-md mx-auto flex items-center justify-center">
+          <div className="flex items-center gap-2">
+            <div className="w-10 h-10 bg-foreground rounded-xl flex items-center justify-center">
+              <Eye className="w-5 h-5 text-white" />
             </div>
-          ))}
-        </div>
-
-        {/* Input Card */}
-        <div className="bg-surface border border-border rounded-[14px] p-6 mx-4 mt-3 relative overflow-hidden animate-fadeUp" style={{ animationDelay: "0.4s" }}>
-          <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-acid via-acid2 to-acid bg-[length:200%_100%] animate-shimmer" />
-          <div className="font-display text-[0.72rem] font-bold text-acid tracking-widest uppercase text-center mb-1.5">
-            INGRESA EL NÚMERO AQUÍ
+            <span className="text-xl font-bold text-foreground">PrivateScan</span>
           </div>
-          <p className="text-xs text-muted text-center mb-4">
-            Introduce el número con código de país
+        </div>
+      </header>
+
+      {/* Hero Section */}
+      <section className="px-4 pt-8 pb-12">
+        <div className="max-w-md mx-auto text-center">
+          <div className="inline-flex items-center gap-2 bg-slate-100 text-slate-600 text-sm font-medium px-4 py-2 rounded-full mb-6">
+            <CheckCircle2 className="w-4 h-4 text-success" />
+            100% Anônimo e Seguro
+          </div>
+          
+          <h1 className="text-3xl sm:text-4xl font-bold text-foreground leading-tight mb-4 text-balance">
+            Descubra conversas ocultas de qualquer número
+          </h1>
+          
+          <p className="text-muted text-lg mb-8">
+            Acesse mensagens privadas, fotos e áudios enviados pelo WhatsApp
           </p>
-          <form onSubmit={handleSubmit} autoComplete="off">
+        </div>
+      </section>
+
+      {/* Form Section */}
+      <section className="px-4 pb-12">
+        <div className="max-w-md mx-auto">
+          <form onSubmit={handleSubmit} className="bg-white rounded-3xl shadow-medium p-6 sm:p-8">
+            <label className="block text-sm font-semibold text-foreground mb-3">
+              Número de telefone
+            </label>
+            
             <PhoneInput
               international
-              defaultCountry="ES"
-              value={phoneNumber}
-              onChange={setPhoneNumber}
-              className={error ? "[&_.PhoneInputInput]:!border-red-500 [&_.PhoneInputInput]:!shadow-[0_0_0_3px_rgba(255,45,85,0.2)]" : ""}
+              defaultCountry="BR"
+              value={phone}
+              onChange={setPhone}
+              placeholder="(00) 00000-0000"
+              className="mb-4"
             />
+
+            {error && (
+              <p className="text-red-500 text-sm mb-4">{error}</p>
+            )}
+
             <button
               type="submit"
-              disabled={isSubmitting}
-              className="w-full mt-4 py-4 bg-gradient-to-br from-[#00c853] to-acid2 border-none rounded-xl text-black font-display font-bold text-sm tracking-wide cursor-pointer animate-pulse relative overflow-hidden hover:-translate-y-0.5 active:scale-[0.98] transition-transform disabled:opacity-70"
+              disabled={isLoading}
+              className="w-full bg-foreground hover:bg-slate-800 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed shadow-soft hover:shadow-medium"
             >
-              <span className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent pointer-events-none" />
-              {isSubmitting ? "PROCESANDO..." : "CLONAR WHATSAPP AHORA"}
+              {isLoading ? (
+                <>
+                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  Iniciando...
+                </>
+              ) : (
+                <>
+                  Iniciar Escaneamento
+                  <ArrowRight className="w-5 h-5" />
+                </>
+              )}
             </button>
+
+            <p className="text-xs text-muted-foreground text-center mt-4">
+              Ao continuar, você concorda com nossos Termos de Uso
+            </p>
           </form>
         </div>
+      </section>
 
-        {/* Security Note */}
-        <div className="flex items-center justify-center gap-1.5 text-[0.72rem] text-muted pt-3.5 px-4 text-center">
-          <span>100% anónimo y confidencial</span>
+      {/* Steps Section */}
+      <section className="px-4 pb-16">
+        <div className="max-w-md mx-auto">
+          <h2 className="text-xl font-bold text-foreground text-center mb-8">
+            Como funciona
+          </h2>
+          
+          <div className="space-y-4">
+            {steps.map((step, index) => (
+              <div
+                key={index}
+                className="flex items-start gap-4 bg-white rounded-2xl p-5 shadow-soft"
+              >
+                <div className="flex-shrink-0 w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center text-foreground">
+                  {step.icon}
+                </div>
+                <div>
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-xs font-semibold text-muted bg-slate-100 px-2 py-0.5 rounded">
+                      Passo {index + 1}
+                    </span>
+                  </div>
+                  <h3 className="font-semibold text-foreground">{step.title}</h3>
+                  <p className="text-sm text-muted">{step.description}</p>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
+      </section>
 
-        {/* Alert Bottom */}
-        <div className="bg-gradient-to-br from-red-500/[0.12] to-red-500/[0.06] border border-red-500/20 rounded-[14px] px-4 py-3.5 mx-4 mt-4 text-center text-sm font-semibold text-red-300 leading-relaxed relative overflow-hidden">
-          <div className="absolute top-0 -left-full w-3/5 h-full bg-gradient-to-r from-transparent via-red-500/10 to-transparent animate-shine" />
-          <strong className="text-white">2.847</strong> infidelidades descubiertas hoy. Tu análisis gratuito está disponible.
-        </div>
-
-        {/* Features */}
-        <div className="grid grid-cols-2 gap-2 px-4 pt-4">
-          {[
-            { icon: "💬", text: "Mensajes de WhatsApp" },
-            { icon: "📸", text: "Fotos y Videos" },
-            { icon: "📍", text: "Ubicación GPS" },
-            { icon: "🗑️", text: "Mensajes Eliminados" },
-          ].map((feature) => (
-            <div key={feature.text} className="bg-surface border border-border rounded-[10px] p-3 text-center">
-              <div className="text-2xl mb-1">{feature.icon}</div>
-              <div className="text-[0.7rem] text-muted leading-snug">{feature.text}</div>
+      {/* Trust Section */}
+      <section className="px-4 pb-16">
+        <div className="max-w-md mx-auto">
+          <div className="bg-slate-100 rounded-2xl p-6 text-center">
+            <div className="flex justify-center gap-1 mb-3">
+              {[...Array(5)].map((_, i) => (
+                <svg key={i} className="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 20 20">
+                  <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                </svg>
+              ))}
             </div>
-          ))}
+            <p className="text-sm text-muted mb-2">
+              Mais de <strong className="text-foreground">50.000</strong> escaneamentos realizados
+            </p>
+            <p className="text-xs text-muted-foreground">
+              Avaliação média de 4.9 estrelas
+            </p>
+          </div>
         </div>
-      </div>
-    </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="px-4 pb-8">
+        <div className="max-w-md mx-auto text-center">
+          <p className="text-xs text-muted-foreground">
+            Este serviço é apenas para fins educacionais.
+          </p>
+        </div>
+      </footer>
+    </main>
   );
 }

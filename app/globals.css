@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 @import 'react-phone-number-input/style.css';
 
 @tailwind base;
@@ -6,16 +6,16 @@
 @tailwind utilities;
 
 :root {
-  --acid: #00ff88;
-  --acid2: #00e5ff;
-  --red: #ff2d55;
-  --yellow: #ffd60a;
-  --bg: #020408;
-  --surface: rgba(0, 255, 136, 0.04);
-  --border: rgba(0, 255, 136, 0.15);
-  --text: #e8f4f0;
-  --muted: #4a6a5a;
-  --radius: 14px;
+  --background: #ffffff;
+  --foreground: #0f172a;
+  --muted: #64748b;
+  --muted-foreground: #94a3b8;
+  --border: #e2e8f0;
+  --primary: #0f172a;
+  --primary-foreground: #ffffff;
+  --accent: #f1f5f9;
+  --success: #10b981;
+  --radius: 12px;
 }
 
 * {
@@ -26,67 +26,139 @@
 
 html {
   font-size: 16px;
+  scroll-behavior: smooth;
 }
 
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-  background: var(--bg);
-  color: var(--text);
+  background: var(--background);
+  color: var(--foreground);
   min-height: 100vh;
   overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
 }
 
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background-image: linear-gradient(rgba(0, 255, 136, 0.02) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0, 255, 136, 0.02) 1px, transparent 1px);
-  background-size: 40px 40px;
-  pointer-events: none;
-  z-index: 0;
-}
-
-/* Phone Input Styles */
+/* Phone Input Styles - White Theme */
 .PhoneInput {
   width: 100% !important;
 }
 
 .PhoneInputInput {
   width: 100%;
-  background: rgba(0, 255, 136, 0.04) !important;
-  border: 1.5px solid rgba(0, 255, 136, 0.2) !important;
-  border-radius: 10px !important;
-  color: var(--text) !important;
+  background: #f8fafc !important;
+  border: 1.5px solid #e2e8f0 !important;
+  border-radius: 12px !important;
+  color: #0f172a !important;
   font-family: 'Inter', sans-serif !important;
   font-size: 16px !important;
-  padding: 14px !important;
+  padding: 16px !important;
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 .PhoneInputInput:focus {
   outline: none !important;
-  border-color: var(--acid) !important;
-  box-shadow: 0 0 0 3px rgba(0, 255, 136, 0.15) !important;
+  border-color: #0f172a !important;
+  box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.1) !important;
 }
 
 .PhoneInputInput::placeholder {
-  color: var(--muted) !important;
+  color: #94a3b8 !important;
 }
 
 .PhoneInputCountry {
-  background: rgba(0, 255, 136, 0.06) !important;
-  border: 1.5px solid rgba(0, 255, 136, 0.2) !important;
-  border-radius: 10px !important;
+  background: #f8fafc !important;
+  border: 1.5px solid #e2e8f0 !important;
+  border-radius: 12px !important;
   padding: 0 12px !important;
   margin-right: 8px !important;
 }
 
 .PhoneInputCountrySelect {
-  background: #0a1a0d !important;
-  color: var(--text) !important;
+  background: #ffffff !important;
+  color: #0f172a !important;
 }
 
-.PhoneInputCountrySelectArrow {
-  border-color: var(--acid) !important;
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeUp {
+  from { 
+    opacity: 0; 
+    transform: translateY(20px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0); 
+  }
+}
+
+@keyframes pulse {
+  0%, 100% { 
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% { 
+    opacity: 0.8;
+    transform: scale(1.02);
+  }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes typing {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 1; }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease both;
+}
+
+.animate-fade-up {
+  animation: fadeUp 0.5s ease both;
+}
+
+.animate-pulse-subtle {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.animate-shimmer {
+  background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s linear infinite;
+}
+
+.animate-typing {
+  animation: typing 1s ease-in-out infinite;
+}
+
+/* Blur effect for locked content */
+.content-locked {
+  filter: blur(8px);
+  user-select: none;
+  pointer-events: none;
 }
