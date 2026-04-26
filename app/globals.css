@@ -1,0 +1,92 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Inter:wght@400;500;600;700&display=swap');
+@import 'react-phone-number-input/style.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --acid: #00ff88;
+  --acid2: #00e5ff;
+  --red: #ff2d55;
+  --yellow: #ffd60a;
+  --bg: #020408;
+  --surface: rgba(0, 255, 136, 0.04);
+  --border: rgba(0, 255, 136, 0.15);
+  --text: #e8f4f0;
+  --muted: #4a6a5a;
+  --radius: 14px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: linear-gradient(rgba(0, 255, 136, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 255, 136, 0.02) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Phone Input Styles */
+.PhoneInput {
+  width: 100% !important;
+}
+
+.PhoneInputInput {
+  width: 100%;
+  background: rgba(0, 255, 136, 0.04) !important;
+  border: 1.5px solid rgba(0, 255, 136, 0.2) !important;
+  border-radius: 10px !important;
+  color: var(--text) !important;
+  font-family: 'Inter', sans-serif !important;
+  font-size: 16px !important;
+  padding: 14px !important;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.PhoneInputInput:focus {
+  outline: none !important;
+  border-color: var(--acid) !important;
+  box-shadow: 0 0 0 3px rgba(0, 255, 136, 0.15) !important;
+}
+
+.PhoneInputInput::placeholder {
+  color: var(--muted) !important;
+}
+
+.PhoneInputCountry {
+  background: rgba(0, 255, 136, 0.06) !important;
+  border: 1.5px solid rgba(0, 255, 136, 0.2) !important;
+  border-radius: 10px !important;
+  padding: 0 12px !important;
+  margin-right: 8px !important;
+}
+
+.PhoneInputCountrySelect {
+  background: #0a1a0d !important;
+  color: var(--text) !important;
+}
+
+.PhoneInputCountrySelectArrow {
+  border-color: var(--acid) !important;
+}
